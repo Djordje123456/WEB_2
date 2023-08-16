@@ -4,10 +4,8 @@ namespace Business.TokenHelper
 {
 	public interface IUserTokenIssuer
 	{
-		string IssueAdminJWT(IAdmin admin);
+		string IssueUserJwt(IUser user);
 
-		string IssueCostumerJWT(ICustomer customer);
-
-		string IssueSellerJWT(ISeller seller);
+		string GetUsernameFromToken(string tokenString);
 	}
 }

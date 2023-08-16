@@ -8,7 +8,7 @@ namespace Data.Repository
 {
 	public class GenericRepository<T> : IGenericRepository<T> where T : class
 	{
-		OnlineShopDbContext _context;
+		readonly OnlineShopDbContext _context;
 
 		public GenericRepository(OnlineShopDbContext context)
 		{
@@ -25,19 +25,32 @@ namespace Data.Repository
 			_context.Set<T>().AddRange(entities);
 		}
 
-		public IEnumerable<T> Find(Expression<Func<T, bool>> expression)
+		public IEnumerable<T> FindAll(Expression<Func<T, bool>> expression)
 		{
-			return _context.Set<T>().Where(expression);
+			var result = _context.Set<T>().Where(expression).ToList();
+
+			return result;
+		}
+
+		public T FindFirst(Expression<Func<T, bool>> expression)
+		{
+			var result = _context.Set<T>().Where(expression).FirstOrDefault();
+
+			return result;
 		}
 
 		public IEnumerable<T> GetAll()
 		{
-			return _context.Set<T>().ToList();
+			var result = _context.Set<T>().ToList();
+
+			return result;
 		}
 
 		public T GetById(int id)
 		{
-			return _context.Set<T>().Find(id);
+			var result = _context.Set<T>().Find(id);
+			
+			return result;
 		}
 
 		public void Remove(T entity)
@@ -48,6 +61,11 @@ namespace Data.Repository
 		public void RemoveRange(IEnumerable<T> entities)
 		{
 			_context.Set<T>().RemoveRange(entities);
+		}
+
+		public void Update(T entity)
+		{
+			_context.Set<T>().Update(entity);
 		}
 	}
 }
