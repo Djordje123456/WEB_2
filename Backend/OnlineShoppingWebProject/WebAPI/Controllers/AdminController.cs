@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
 {
@@ -7,11 +6,6 @@ namespace WebAPI.Controllers
 	[ApiController]
 	public class AdminController : ControllerBase
 	{
-		[HttpGet("all-sellers")]
-		[Authorize(Roles = "Admin")]
-		public IActionResult GetAllSellers()
-		{
-			return Ok();
-		}
+		
 	}
 }

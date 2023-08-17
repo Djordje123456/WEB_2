@@ -1,4 +1,5 @@
-﻿using Data.Models;
+﻿using Business.Dto.User;
+using Data.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -43,9 +44,10 @@ namespace Business.TokenHelper
 		{
 			List<Claim> claims = new List<Claim>() 
 			{ 
-				new Claim(ClaimTypes.Role, UserRole.Admin.ToString()),
-				new Claim(ClaimTypes.NameIdentifier, admin.Username),
-				new Claim("role", UserRole.Admin.ToString())
+				new Claim(ClaimTypes.Role, UserType.Admin.ToString()),
+				new Claim("role", UserType.Admin.ToString()),
+				new Claim("id", admin.Id.ToString()),
+				new Claim("username", admin.Username)
 			};
 
 			string token = IssueJwt(claims);
@@ -57,8 +59,10 @@ namespace Business.TokenHelper
 		{
 			List<Claim> claims = new List<Claim>() 
 			{ 
-				new Claim(ClaimTypes.Role, UserRole.Customer.ToString()),
-				new Claim(ClaimTypes.NameIdentifier, customer.Username)
+				new Claim(ClaimTypes.Role, UserType.Customer.ToString()),
+				new Claim("role", UserType.Customer.ToString()),
+				new Claim("id", customer.Id.ToString()),
+				new Claim("username", customer.Username)
 			};
 
 			string token = IssueJwt(claims);
@@ -70,8 +74,10 @@ namespace Business.TokenHelper
 		{
 			List<Claim> claims = new List<Claim>() 
 			{ 
-				new Claim(ClaimTypes.Role, UserRole.Seller.ToString()),
-				new Claim(ClaimTypes.NameIdentifier, seller.Username)
+				new Claim(ClaimTypes.Role, UserType.Seller.ToString()),
+				new Claim("role", UserType.Seller.ToString()),
+				new Claim("id", seller.Id.ToString()),
+				new Claim("username", seller.Username)
 			};
 
 			string token = IssueJwt(claims);
@@ -81,20 +87,22 @@ namespace Business.TokenHelper
 
 		public string IssueUserJwt(IUser user)
 		{
+			string token = null;
+
 			if (user.GetType().Equals(typeof(Admin)))
 			{
-				return IssueAdminJwt((Admin)user);
+				token = IssueAdminJwt((Admin)user);
 			}
 			else if (user.GetType().Equals(typeof(Customer)))
 			{
-				return IssueCostumerJwt((Customer)user);
+				token =  IssueCostumerJwt((Customer)user);
 			}
 			else if (user.GetType().Equals(typeof(Seller)))
 			{
-				return IssueSellerJwt((Seller)user);
+				token =  IssueSellerJwt((Seller)user);
 			}
 
-			return null;
+			return token;
 		}
 
 		public string GetUsernameFromToken(string tokenString)
@@ -104,6 +112,15 @@ namespace Business.TokenHelper
 			string username = token.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
 
 			return username;
+		}
+
+		public string GetClaimValueFromToken(string tokenString, string claimType)
+		{
+			JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
+			JwtSecurityToken token = handler.ReadJwtToken(tokenString);
+			string claimValue = token.Claims.Where(x => x.Type == claimType).FirstOrDefault().Value;
+
+			return claimValue;
 		}
 	}
 }
