@@ -1,11 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Business.Dto.ArticleDto
+namespace Business.Dto.Article
 {
 	public class NewArticleDto
 	{
@@ -14,6 +9,8 @@ namespace Business.Dto.ArticleDto
 		public string Description { get; set; }
 
 		public int Quantity { get; set; }
+
+		public double Price { get; set; }
 
 		public IFormFile ProductImage { get; set; }
 	}
