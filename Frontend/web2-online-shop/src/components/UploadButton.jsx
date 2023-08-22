@@ -1,26 +1,45 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Button from '@mui/material/Button';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 
-export default function UploadButton({
-  callback,
+const UploadButton = ({
+  doubleClickCallback,
+  uploadCallback,
   width,
   maxWidthPerc,
   maxHeightPerc,
-}) {
+  direction,
+  image,
+  alternativeToNoImage,
+  buttonText,
+}) => {
   const [imageUrl, setImageUrl] = useState(null);
+  const inputRef = useRef();
 
   maxWidthPerc = maxWidthPerc ?? '50%';
   maxHeightPerc = maxHeightPerc ?? '50%';
+  width = width ?? '50%';
+  direction = direction ?? 'row';
+  buttonText = buttonText ?? 'Upload';
+
+  useEffect(() => {
+    if (image) {
+      setImageUrl(image);
+    }
+  }, [image]);
 
   const handleFileUpload = (event) => {
     try {
       const file = event.target.files[0];
-      const reader = new FileReader();
+      if (file == null) {
+        return;
+      }
 
+      uploadCallback(file);
+
+      const reader = new FileReader();
       reader.onloadend = () => {
         setImageUrl(reader.result);
-        callback(reader.result);
       };
 
       reader.readAsDataURL(file);
@@ -35,7 +54,11 @@ export default function UploadButton({
       display='flex'
       alignItems='center'
       justifyContent={imageUrl == null ? 'center' : 'space-evenly'}
-      sx={{ width: width ?? '50%' }}
+      sx={{
+        width: width,
+        flexDirection: direction,
+        gap: '10px',
+      }}
     >
       {imageUrl && (
         <img
@@ -44,15 +67,20 @@ export default function UploadButton({
           style={{ maxWidth: maxWidthPerc, maxHeight: maxHeightPerc }}
           onDoubleClick={(e) => {
             setImageUrl(null);
-            callback(null);
+            doubleClickCallback(null);
+            inputRef.current.value = null;
           }}
         />
       )}
+      {alternativeToNoImage && !imageUrl && (
+        <Typography>{alternativeToNoImage}</Typography>
+      )}
       <label htmlFor='upload-image'>
         <Button variant='contained' component='span'>
-          Upload
+          {buttonText}
         </Button>
         <input
+          ref={inputRef}
           id='upload-image'
           hidden
           accept='image/*'
@@ -62,4 +90,6 @@ export default function UploadButton({
       </label>
     </Box>
   );
-}
+};
+
+export default UploadButton;

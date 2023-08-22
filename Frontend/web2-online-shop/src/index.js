@@ -5,15 +5,16 @@ import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from '@emotion/react';
 import myTheme from './style/myTheme';
 import { CssBaseline } from '@mui/material';
+import ContextProvider from './context/ContextProvider';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <ThemeProvider theme={myTheme}>
-    <CssBaseline />
-    <React.StrictMode>
-      <BrowserRouter>
+    <BrowserRouter>
+      <CssBaseline />
+      <ContextProvider>
         <App />
-      </BrowserRouter>
-    </React.StrictMode>
+      </ContextProvider>
+    </BrowserRouter>
   </ThemeProvider>
 );
