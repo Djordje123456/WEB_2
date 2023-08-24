@@ -1,12 +1,11 @@
 import { createTheme } from '@mui/material';
-import { teal } from '@mui/material/colors';
+import { blueGrey, teal } from '@mui/material/colors';
 
 export const themeOptions = {
   palette: {
     mode: 'dark',
-    background: { default: '#398f88' },
     primary: {
-      main: teal[300],
+      main: blueGrey[500],
     },
     secondary: {
       main: '#f50057', // Razzmatazz
